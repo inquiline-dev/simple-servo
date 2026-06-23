@@ -72,24 +72,14 @@ That's three wires. The servo gets its power straight from the Arduino's 5V pin.
 
 ---
 
-## 🔌 Circuit Diagram (ASCII)
-Arduino Uno R3
-+-----------------+
-| |
-| GND o--------+----- Brown (Servo GND)
-| |
-| 5V o--------+----- Red (Servo VCC)
-| |
-| D9 o--------+----- Orange (Servo Signal)
-| |
-+-----------------+
-|
-| USB to computer
-|
-[Laptop]
+### 🔌 Circuit Diagram
 
-> *Plug the servo into your breadboard so it doesn't dangle. Point the horn away from the wires so it can spin freely.*
+![Fritzing wiring diagram](wiring-diagram.png)
 
+The three connections:
+- **Brown** → GND
+- **Red** → 5V
+- **Orange** → Pin 9
 ---
 
 ## 💻 The Code
