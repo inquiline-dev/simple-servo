@@ -8,7 +8,7 @@
    - Servo red    → Arduino 5V
    - Servo orange → Arduino pin 9
 
-   Created by Parham (inquiline-dev), 2025.
+   Created by Parham (inquiline-dev), 2026.
    License: MIT
 */
 

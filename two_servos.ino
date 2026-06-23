@@ -10,7 +10,7 @@
    Power warning: Two unloaded SG90s are usually safe on USB power.
    If they stall or buzz, use an external 5V supply.
 
-   Created by Parham (inquiline-dev), 2025.
+   Created by Parham (inquiline-dev), 2026.
    License: MIT
 */
 
