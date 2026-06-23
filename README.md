@@ -61,6 +61,7 @@ Nobody builds a robot in a day. We build it one module at a time, and every modu
 **What this means in plain English:**  
 An unloaded SG90 sweeping freely on USB power is safe. But if you add more servos, or if the servo is pushing against something heavy (stalling), it can pull more current than the Arduino's 5V pin or USB port can comfortably give. That's when you need an external power supply. For this tutorial — sweeping with no load — you're good.
 
+📊 **See actual measurements:** [power-tests.md](power-tests.md)
 ---
 
 ## ⚡ Wiring (text diagram)
