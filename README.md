@@ -1,7 +1,3 @@
-# simple-servo
-The easiest possible servo motor tutorial — because everyone deserves to understand what their hands build.
-
-
 # 🤖 Arduino Basics: Making an SG90 Servo Motor Move
 
 *A project so simple a 10‑year‑old can build it — and understand every piece.*
@@ -25,6 +21,21 @@ This is the same kind of motor inside robot arms, camera sliders, and remote‑c
 
 ---
 
+## 📚 Learning Path (Where This Fits)
+
+This tutorial is step one. Here's the bigger picture:
+
+1. **This tutorial** — Make the servo sweep (you are here)
+2. **Control the servo with a potentiometer** — Turn a knob, the servo follows (coming soon)
+3. **Control the servo with a joystick** — Thumb control like a video game (coming soon)
+4. **Ultrasonic sensor + servo** — A motion‑activated tracker (coming soon)
+5. **Pan‑tilt camera mount** — Two servos, full movement (coming soon)
+6. **Robot arm** — Putting it all together (future)
+
+Nobody builds a robot in a day. We build it one module at a time, and every module makes sense before the next one arrives.
+
+---
+
 ## 🧱 What you need
 
 | Component          | Quantity |
@@ -38,15 +49,44 @@ This is the same kind of motor inside robot arms, camera sliders, and remote‑c
 
 ---
 
-## ⚡ Wiring (text diagram)
-Arduino Uno SG90 Servo
+## 📋 Component Details (Specs That Actually Matter)
 
+| Spec | Value | Why It Matters |
+|------|-------|----------------|
+| SG90 operating voltage | 4.8V – 6V | Arduino's 5V pin is perfect |
+| SG90 stall current | ~360mA at 4.8V | If the servo jams or pushes too hard, it pulls this much |
+| Arduino Uno 5V pin max | ~400mA | Close! One unloaded SG90 is usually fine |
+| USB port typical output | 500mA | The Arduino + one servo both drink from this |
+
+**What this means in plain English:**  
+An unloaded SG90 sweeping freely on USB power is safe. But if you add more servos, or if the servo is pushing against something heavy (stalling), it can pull more current than the Arduino's 5V pin or USB port can comfortably give. That's when you need an external power supply. For this tutorial — sweeping with no load — you're good.
+
+---
+
+## ⚡ Wiring (text diagram)
 GND ------------ Brown wire
 5V ------------ Red wire
 D9 ------------ Orange wire
 
-That's three wires. The servo gets its power straight from the Arduino's 5V pin.  
-One servo is safe — the Arduino can handle it. If you're driving several servos later, you'll need an external supply.
+That's three wires. The servo gets its power straight from the Arduino's 5V pin.
+
+---
+
+## 🔌 Circuit Diagram (ASCII)
+Arduino Uno R3
++-----------------+
+| |
+| GND o--------+----- Brown (Servo GND)
+| |
+| 5V o--------+----- Red (Servo VCC)
+| |
+| D9 o--------+----- Orange (Servo Signal)
+| |
++-----------------+
+|
+| USB to computer
+|
+[Laptop]
 
 > *Plug the servo into your breadboard so it doesn't dangle. Point the horn away from the wires so it can spin freely.*
 
@@ -86,6 +126,27 @@ The servo horn will smoothly turn from 0° to 180° and back, forever.
 6. **Then it sweeps back.** The second `for` loop counts down from 180 to 0, and the servo reverses its journey.
 
 That's the whole magic. No sensors, no cloud — just timing and tiny electric pulses.
+
+---
+
+## ⚡ How the Servo Knows Where to Go (PWM Explained Simply)
+
+The Arduino doesn't speak "degrees." It speaks in **pulses** — tiny bursts of electricity.
+
+Here's the secret language:
+
+- The Arduino sends a pulse **50 times per second** (that's 50Hz).
+- Each pulse can be **between 1 and 2 milliseconds** long.
+- **A 1ms pulse means "go to 0 degrees."**
+- **A 1.5ms pulse means "go to 90 degrees" (the middle).**
+- **A 2ms pulse means "go to 180 degrees."**
+
+So when the code says `myServo.write(90)`, it's really saying:  
+*"Send a 1.5-millisecond pulse, 50 times per second."*
+
+The servo has tiny electronics inside that measure the pulse length and move the motor until the output shaft matches. It's like a secret handshake: the length of the handshake tells the servo exactly where to point.
+
+This technique is called **PWM (Pulse Width Modulation)** — a fancy name for "blinking electricity on and off really fast with different on‑times." The servo library handles all the math, so you just say an angle and it works.
 
 ---
 
