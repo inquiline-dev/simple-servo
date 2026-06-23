@@ -108,6 +108,14 @@ Then open the **Serial Monitor** (Tools → Serial Monitor, set baud to `9600`).
 
 ---
 
+
+## 🎬 See It in Action
+
+*Video coming soon — a 10-second demo of the servo sweeping, potentiometer control, and dual servos.*
+
+---
+
+
 ## 🔬 How the code works (explained for a 10-year-old)
 
 1. **`#include <Servo.h>`** — This brings in a helper library that already knows how to talk to servos. It comes with the Arduino IDE, so you don't need to download anything.

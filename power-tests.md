@@ -1,5 +1,7 @@
 # Servo Power Consumption Measurements
 
+*Values below are manufacturer typicals for the SG90. Real measurements from my own servo coming soon.*
+
 Measured with a multimeter in series between Arduino 5V and SG90 red wire.
 
 | Condition | Current Draw |
