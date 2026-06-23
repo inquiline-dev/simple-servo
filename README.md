@@ -1,228 +1,106 @@
-# 🤖 Arduino Basics: Making an SG90 Servo Motor Move
+# getting an sg90 servo to work
 
-*A project so simple a 10-year-old can build it — and understand every piece.*
+ok so i bought this little blue servo like months ago and it just sat in a box because honestly i was kinda intimidated. every tutorial was like "connect the pwm signal" and i didnt even know what pwm meant back then
 
-You will turn an **SG90 micro servo motor** and an **Arduino Uno** into a precise, moving machine.  
-No extra power supply, no soldering — just three wires and curiosity.
-
----
-
-## 🧠 What is a servo motor?
-
-A servo is a smart motor. You don't just turn it on and let it spin. You tell it: *"Go to 45 degrees. Now go to 90 degrees. Now wave."* And it holds that position.
-
-The SG90 is tiny but strong. It can swing from **0° to 180°** and stay exactly where you put it.  
-This is the same kind of motor inside robot arms, camera sliders, and remote-control planes.
-
-**The three wires on the servo:**
-- **Brown** – Ground. It completes the circuit.
-- **Red** – Power. It drinks from the Arduino's 5V.
-- **Orange** – Signal. It listens for position commands.
+anyway i figured it out eventually. its actually really simple once you just try it. this is what i wish someone had told me back then
 
 ---
 
-## 📚 Learning Path (Where This Fits)
+parts
 
-This tutorial is step one. Here's the bigger picture:
+you need an arduino uno. and an sg90 servo (the tiny blue one). and a breadboard. and 3 wires. male to male.
 
-1. **This tutorial** — Make the servo sweep (you are here)
-2. **Control the servo with a potentiometer** — Turn a knob, the servo follows (in this repo: `potentiometer_servo.ino`)
-3. **Control the servo with a joystick** — Thumb control like a video game (coming soon)
-4. **Ultrasonic sensor + servo** — A motion-activated tracker (coming soon)
-5. **Pan-tilt camera mount** — Two servos, full movement (coming soon)
-6. **Robot arm** — Putting it all together (future)
-
-Nobody builds a robot in a day. We build it one module at a time, and every module makes sense before the next one arrives.
+thats literally it.
 
 ---
 
-## 🧱 What you need
+how to connect it
 
-| Component          | Quantity |
-|--------------------|----------|
-| Arduino Uno R3     | 1        |
-| SG90 micro servo   | 1        |
-| Breadboard         | 1        |
-| Jumper wires (male-to-male) | 3 |
+the servo has 3 wires coming out of it. brown, red, orange.
 
-**No soldering. No extra power.**
+brown -> gnd
+red -> 5v  
+orange -> pin 9
 
----
-
-## 📋 Component Details (Specs That Actually Matter)
-
-| Spec | Value | Why It Matters |
-|------|-------|----------------|
-| SG90 operating voltage | 4.8V – 6V | Arduino's 5V pin is perfect |
-| SG90 stall current | ~360mA at 4.8V | If the servo jams or pushes too hard, it pulls this much |
-| Arduino Uno 5V pin max | ~400mA | Close! One unloaded SG90 is usually fine |
-| USB port typical output | 500mA | The Arduino + one servo both drink from this |
-
-**What this means in plain English:**  
-An unloaded SG90 sweeping freely on USB power is safe. But if you add more servos, or if the servo is pushing against something heavy (stalling), it can pull more current than the Arduino's 5V pin or USB port can comfortably give. That's when you need an external power supply. For this tutorial — sweeping with no load — you're good.
-
-📊 **See actual measurements:** [power-tests.md](power-tests.md)  
-📚 **External power guide:** [external-power.md](external-power.md)
+the first time i did this i plugged orange into 5v and red into pin 9 like an idiot and nothing happened. didnt break anything but i sat there confused for like 15 minutes. so yeah dont do that
 
 ---
 
-## ⚡ Wiring (text diagram)
-Arduino Uno SG90 Servo
+the code
 
-GND ------------ Brown wire
-5V ------------ Red wire
-D9 ------------ Orange wire
+i put the code in a file called sweep_servo.ino. just open it in arduino ide and upload it to the board. the servo will start moving from 0 to 180 degrees and back. like a windshield wiper.
 
-That's three wires. The servo gets its power straight from the Arduino's 5V pin.
+quick breakdown of what the code is doing:
 
----
+#include <Servo.h> at the top brings in the servo library (built in, no download)
+Servo myservo; makes a servo object called myservo
+myservo.attach(9); tells it the servo is on pin 9
+myservo.write(angle); is the actual command that moves it
 
-## 🔌 Circuit Diagram
+the for loop just counts up from 0 to 180 and calls write() each time. then counts back down
+delay(15) gives the servo time to physically reach the angle before the next command comes
 
-![Fritzing wiring diagram](wiring-diagram.png)
-
-The three connections:
-- **Brown** → GND
-- **Red** → 5V
-- **Orange** → Pin 9
-
-> *Plug the servo into your breadboard so it doesn't dangle. Point the horn away from the wires so it can spin freely.*
+if you change delay(15) to delay(5) it moves faster but gets kinda jerky. if you do delay(50) its super slow and smooth. try it.
 
 ---
 
-## 💻 The Code
+other sketches in this repo
 
-This repository has several sketches, from easiest to most advanced:
+i put a bunch of different versions in here because i kept experimenting:
 
-| Sketch | What it does |
-|--------|-------------|
-| `sweep_servo.ino` | Basic sweep — start here |
-| `potentiometer_servo.ino` | Turn a knob, the servo follows |
-| `sweep_microseconds.ino` | Raw pulse-width control (544µs–2400µs) |
-| `sweep_nonblocking.ino` | Uses `millis()` — no `delay()`, real multitasking |
-| `two_servos.ino` | Two servos sweeping in opposite directions |
-| `calibrate_servo.ino` | Find your servo's real min/max angles |
-
-Open any sketch in the Arduino IDE, select your board and port, and click **Upload**.  
-Then open the **Serial Monitor** (Tools → Serial Monitor, set baud to `9600`).
+sweep_servo.ino is the basic one. start there
+potentiometer_servo.ino lets you control the servo by turning a knob. this one was really satisfying the first time
+sweep_microseconds.ino does the same thing but instead of angles you type the pulse width directly in microseconds
+sweep_nonblocking.ino uses millis() instead of delay(). this matters later when you need the arduino to do more than one thing at once
+two_servos.ino controls two servos at the same time moving in opposite directions
+calibrate_servo.ino is something i wrote because my servo couldnt actually reach 0 degrees without making this awful buzzing sound. turns out a lot of sg90s stop at like 5 or 10 degrees on the low end
 
 ---
 
+the thing about pulses
 
-## 🎬 See It in Action
+i kept reading "pwm" everywhere and didnt get it for ages. here is what it actually means:
 
-*Video coming soon — a 10-second demo of the servo sweeping, potentiometer control, and dual servos.*
+the arduino sends a short pulse of electricity to the servo 50 times every second. actually its not exactly 50hz for all servos but for the sg90 it is. anyway the length of that pulse tells the servo where to go. if the pulse is 1 millisecond, thats 0 degrees. 1.5 milliseconds is 90 degrees. 2 milliseconds is 180 degrees.
 
----
-
-
-## 🔬 How the code works (explained for a 10-year-old)
-
-1. **`#include <Servo.h>`** — This brings in a helper library that already knows how to talk to servos. It comes with the Arduino IDE, so you don't need to download anything.
-
-2. **`Servo myServo;`** — You create a "driver" called `myServo`. Think of it like giving a name to your remote control.
-
-3. **`myServo.attach(9);`** — You plug that remote into pin 9. Now whatever you tell `myServo` goes to the orange wire.
-
-4. **`myServo.write(angle);`** — The actual command. "Go to this angle and stay there." Inside a `for` loop, `angle` counts from 0 to 180, so the servo moves step by step.
-
-5. **`delay(15);`** — A tiny pause. The servo is fast, but not instant. It needs about 15 milliseconds to physically reach the next angle. Without this delay, it skips and twitches.
-
-6. **Then it sweeps back.** The second `for` loop counts down from 180 to 0, and the servo reverses its journey.
-
-7. **Non-blocking version:** In `sweep_nonblocking.ino`, `delay()` is replaced with `millis()`. The Arduino checks if it's time to move, then immediately does other things. This is how real robots work: moving servos *while* reading sensors.
-
-That's the whole magic. No sensors, no cloud — just timing and tiny electric pulses.
+thats it. the servo library does all the math so you just type an angle and it figures out the pulse for you. but knowing the pulse thing helped me understand why writeMicroseconds() exists and why some servos do weird stuff at the edges of their range.
 
 ---
 
-## ⚡ How the Servo Knows Where to Go (PWM Explained Simply)
+power stuff
 
-The Arduino doesn't speak "degrees." It speaks in **pulses** — tiny bursts of electricity.
+i almost fried my arduino once trying to run three servos from the 5v pin. dont do that.
 
-Here's the secret language:
+one sg90 on usb power is totally fine. but when a servo is pushing against something (like if you hold the horn still) it pulls way more current. like 360 milliamps. the arduino 5v pin can give about 400 milliamps. so one servo is safe. two stalled servos will reset the arduino or make it act really weird.
 
-- The Arduino sends a pulse **50 times per second** (that's 50Hz).
-- Each pulse can be **between 1 and 2 milliseconds** long.
-- **A 1ms pulse means "go to 0 degrees."**
-- **A 1.5ms pulse means "go to 90 degrees" (the middle).**
-- **A 2ms pulse means "go to 180 degrees."**
+if you want to run more than one servo or a bigger servo you need a separate power supply. i wrote down what i learned about that in external-power.md.
 
-So when the code says `myServo.write(90)`, it's really saying:  
-*"Send a 1.5-millisecond pulse, 50 times per second."*
-
-The servo has tiny electronics inside that measure the pulse length and move the motor until the output shaft matches. It's like a secret handshake: the length of the handshake tells the servo exactly where to point.
-
-This technique is called **PWM (Pulse Width Modulation)** — a fancy name for "blinking electricity on and off really fast with different on-times." The servo library handles all the math, so you just say an angle and it works.
-
-**Want to try raw pulse control?**  
-Open `sweep_microseconds.ino` — it uses `writeMicroseconds()` instead of `write()`.  
-You'll see the exact pulse widths (544µs to 2400µs) that the servo understands.
-
-### What about continuous rotation servos?
-
-Some servos don't do angles — they spin continuously like motors.  
-The SG90 comes in both types. A continuous rotation servo interprets:
-
-- **1.5ms pulse** → Stop
-- **< 1.5ms** → Spin one direction (faster as pulse gets shorter)
-- **> 1.5ms** → Spin the other direction (faster as pulse gets longer)
-
-If your servo spins forever instead of stopping at an angle, you probably have a continuous rotation model.  
+oh also if your arduino keeps disconnecting from your computer when the servo moves, thats the power thing. the servo pulls too much and the usb port shuts off for a second. i had this happen with my laptop. using a powered usb hub fixed it.
 
 ---
 
-## 🧪 Try these experiments
+stuff that went wrong for me
 
-- **Change the sweep speed.** Make the delay `5` or `50`. What happens? *Too fast and the servo gets jerky; too slow and it crawls.*
-- **Make it wave.** Instead of 0–180, sweep from 45 to 135. Now it looks like it's waving hello.
-- **Change the pin.** Move the orange wire to pin 10, change `attach(9)` to `attach(10)` in the code. Does it still work? *(Spoiler: yes — pins 3, 5, 6, 9, 10, 11 are all servo-ready.)*
-- **Run two servos at once.** Open `two_servos.ino`. They sweep in opposite directions. This is the basis of a pan-tilt camera mount.
-- **Find your servo's true limits.** Open `calibrate_servo.ino`. Type angles in the Serial Monitor and listen for buzzing.
-
----
-
-## 🛠 Troubleshooting
-
-- **Servo buzzes or vibrates but doesn't move.**  
-  The USB port may not be giving enough current. Try a powered USB hub, or check that the red wire is firmly in the 5V pin.
-
-- **Servo moves erratically or not at all.**  
-  Check the orange wire is on pin 9. If you moved it, open the sketch and change `attach(9)` to your new pin.
-
-- **Servo gets hot.**  
-  It's stalling — something is physically blocking it, or the angle is beyond its range. SG90 usually does 0–180, but some copies stop at 10–170. Use `calibrate_servo.ino` to find your safe range.
-
-- **Nothing happens, and the Serial Monitor is blank.**  
-  Make sure the baud rate in the monitor is set to 9600. Also check that your USB cable is data-capable (some are charge-only).
-
-- **Running multiple servos?** Read [external-power.md](external-power.md) before you fry something.
+- the servo made a buzzing sound but didnt move. the red wire was in 3.3v instead of 5v.
+- the serial monitor was totally blank. turns out my usb cable was from a power bank and didnt have data lines. switched cables and it worked.
+- servo got really hot once. i had it trying to go to 180 but physically it could only go to like 160 and it was pushing against its own limit the whole time. calibrate_servo.ino helps find the actual limits.
+- spent forever debugging once and the wire was just loose in the breadboard. pushed it in properly and everything worked.
 
 ---
 
-## 🔜 Next Steps
+what im doing
 
-Now that you can make a servo move to exact angles, imagine controlling it with a joystick or an ultrasonic sensor. That's exactly where we're going next.  
-👉 **Next tutorial:** Controlling a servo with a KY-023 joystick module — coming soon.
+im trying to learn robotics one piece at a time. this servo tutorial is part of a series. so far ive done:
 
----
+- how to use an ultrasonic sensor (hc-sr04)
+- this servo tutorial
 
-## 🤝 Why this project exists
+next im going to do a joystick module. then combine the ultrasonic and servo to make a little tracker that points at whatever is closest. after that maybe a pan-tilt mount with two servos. eventually a robot arm.
 
-I'm Parham. I'm 15 and I live in Iran. I built this because the first step into robotics should be so clear that nobody feels stupid.  
-If you are a kid who just got their first Arduino, this is for you.  
-If you are an adult who was always afraid of wires, this is for you too.
+im 15 and i live in iran. writing these tutorials is how i make sure i actually understand what im doing. if i can explain it to someone else then i probably get it.
 
-**Knowledge shouldn't be locked behind paywalls or import sanctions. Servos are just tiny muscles waiting for instructions.**
+if something is wrong just open an issue or email me. i probably made mistakes in here somewhere
 
----
+parham
 
-## 📄 License
-
-MIT — use this however you like, just keep it open.
-
----
-
-## 📬 Contact
-
-inquiline.dev@proton.me
+im putting this then match this with all other files in our repo

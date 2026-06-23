@@ -1,50 +1,43 @@
-# Using an External Power Supply for Servos
+# external power for servos
 
-One SG90 on USB power is fine. But what if you want to run 2, 3, or 4?
-
----
-
-## Why you need external power
-
-| Power Source | Max Current | How Many SG90s (moving) |
-|-------------|------------|------------------------|
-| Arduino 5V pin (USB) | ~400mA | 1–2 safely |
-| External 5V 2A adapter | 2000mA | 5–6 easily |
-| External 5V 5A supply | 5000mA | 10+ |
-
-When a servo stalls, it can pull **360mA or more**. Two stalled servos = 720mA = brownout or Arduino reset.  
-
-The fix: power the servos separately. The Arduino still controls them, but the heavy current comes from somewhere else.
+one sg90 on usb power is fine. but if you want to run more than one or a bigger servo you need a separate power supply. i learned this the hard way when my arduino kept resetting.
 
 ---
 
-## How to connect external power
+why you need it
 
-External 5V Supply (+) goes to Breadboard red rail (+)  
-External 5V Supply (-) goes to Breadboard blue rail (-)  
+| power source | max current | how many sg90s |
+|-------------|------------|----------------|
+| arduino 5v pin (usb) | about 400mA | 1 or 2 |
+| external 5v 2a adapter | 2000mA | like 5 or 6 |
+| external 5v 5a | 5000mA | way more than you need |
 
-Breadboard red rail (+) goes to Servo 1 red wire  
-Breadboard red rail (+) goes to Servo 2 red wire  
-Breadboard blue rail (-) goes to Servo 1 brown wire  
-Breadboard blue rail (-) goes to Servo 2 brown wire  
-Breadboard blue rail (-) goes to Arduino GND (shared ground!)
-
-**Critical:** Connect the external supply's ground to Arduino GND.  
-Without a shared ground, the servo can't understand the signal from the Arduino.
+when a servo stalls (something blocks it) it pulls like 360mA. two stalled servos is 720mA which is more than the arduino can give. the arduino either resets or acts really weird.
 
 ---
 
-## What to use as a power supply
+how to hook it up
 
-- A 5V 2A wall adapter with a barrel jack
-- A bench power supply set to 5V
-- A 4×AA battery pack (6V — within SG90 spec)
-- A USB power bank with a breakout board
+external 5v (+) goes to breadboard red rail
+external 5v (-) goes to breadboard blue rail
+
+servo red wires go to breadboard red rail
+servo brown wires go to breadboard blue rail
+breadboard blue rail connects to arduino gnd (important! dont skip this)
+
+if you dont connect the ground from the external supply to the arduino gnd the servo wont understand the signal. ask me how i know lol
 
 ---
 
-## Warning
+what to use as a power supply
 
-- **Never** connect external power to the Arduino's 5V pin *while* USB is connected — you can damage the regulator.
-- Always power servos from the breadboard rail, not from the Arduino, when using external power.
-- The Arduino still needs its own power (USB or barrel jack).
+- 5v 2a wall adapter with barrel jack
+- bench power supply set to 5v
+- 4 aa batteries in a holder (gives 6v, sg90 can handle it)
+- usb power bank with a breakout board
+
+---
+
+warning
+
+dont connect external power to the arduino 5v pin while usb is plugged in. you can damage the regulator. power the servos from the breadboard not the arduino. the arduino still needs its own power (usb or barrel jack)
